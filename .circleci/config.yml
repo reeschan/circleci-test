@@ -10,11 +10,9 @@ parameters:
 commands:
   make-file:
     steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: ./tmp/workspace
       - run:
-          command: touch ./tmp/workspace/test
+          working_directory: ./tmp/workspace/
+          command: touch test
   copy-to-azure:
     steps:
       - attach_workspace:
