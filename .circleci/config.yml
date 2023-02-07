@@ -10,12 +10,18 @@ parameters:
 commands:
   make-file:
     steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ./tmp/workspace
       - run:
-          command: touch test
+          command: touch ./tmp/workspace/test
   copy-to-azure:
     steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ./tmp/workspace
       - run:
-          command:  az storage blob upload --overwrite true --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
+          command:  az storage blob upload --overwrite true --name ./tmp/workspace/test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
   build-app:
     docker:
