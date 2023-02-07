@@ -27,9 +27,11 @@ commands:
           # Must be absolute path or relative path from working_directory
           at: /tmp/workspace
       - run:
+          working_directory: /tmp/workspace
           command: ls
       - run:
-          command:  az storage blob upload --overwrite true --name ./tmp/workspace/test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
+         working_directory: /tmp/workspace
+         command:  az storage blob upload --overwrite true --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
   build-app:
     docker:
