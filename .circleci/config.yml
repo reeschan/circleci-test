@@ -5,14 +5,14 @@ parameters:
   env:
     type: string
     default: "dev"
+
 commands:
   copy-to-azure:
     steps:
       - run:
           command: touch test
       - run:
-          command:  az storage blob upload --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string CONNECTION_STRING_<< pipeline_parameters.env >>
-          name: List resources of tenant stored as `AZURE_SP_TENANT` env var
+          command:  az storage blob upload --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
   copy:
     executor: azure-cli/azure-docker
@@ -23,11 +23,6 @@ jobs:
 workflows:
 
   example-workflow:
-    when:
-      or:
-        - equal: ['dev', << pipeline.parameters.env >>]
-        - equal: ['it1', << pipeline.parameters.env >>]
-        - equal: ['prod', << pipeline.parameters.env >>]
     jobs:
       - copy
 
