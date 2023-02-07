@@ -8,24 +8,28 @@ parameters:
     default: "dev"
 
 commands:
+  make-file:
+    steps:
+      - run:
+          command: touch test
   copy-to-azure:
     steps:
       - run:
-          command: touch test
-      - run:
           command:  az storage blob upload --overwrite true --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
-  copy:
+  build-app:
     docker:
       - image: cimg/node:16.15.1
     steps:
-      - run:
-          command: touch test
+      - make-file
+  copy-to-azure:
+    executor: azure-cli/azure-docker
+    steps:
       - copy-to-azure
 workflows:
-
   example-workflow:
     jobs:
-      - copy
-
-
+      - build-app
+      - copy-to-azure:
+          requires:
+            - build-app
