@@ -16,6 +16,13 @@ jobs:
           name: List resources of tenant stored as `AZURE_SP_TENANT` env var
 workflows:
   example-workflow:
+    when:
+      and:
+        - equal: ['deploy', << pipeline.parameters.action >>]
+        - or:
+          - equal: ['dev', << pipeline.parameters.env >>]
+          - equal: ['it1', << pipeline.parameters.env >>]
+          - equal: ['prod', << pipeline.parameters.env >>]
     jobs:
       - login-to-azure
 
