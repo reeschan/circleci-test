@@ -1,40 +1,22 @@
 version: 2.1
 orbs:
   azure-cli: circleci/azure-cli@1.2.2
+parameters:
+  env:
+    type: 'string'
+    default: "dev"
 jobs:
-  build:
-    executor: azure-cli/azure-docker
-    environment:
-      stage: dev
-    steps:
-      - run: |
-          echo "Using environment: $stage"
-          if [ $stage == "dev" ]; then
-            CONNECTION_STRING="CONNECTION_STRING_DEV"
-            ACCOUNT_KEY="ACCOUNT_KEY_DEV"
-            container_name="update-template-dev"
-          elif [ $stage == "it1" ]; then
-            CONNECTION_STRING="CONNECTION_STRING_IT1"
-            ACCOUNT_KEY="ACCOUNT_KEY_IT1"
-            container_name="update-template-it1"
-          else
-            CONNECTION_STRING="CONNECTION_STRING_PROD"
-            ACCOUNT_KEY="ACCOUNT_KEY_PROD"
-            container_name="update-template-prod"
-          fi
-          echo "Setting 'CONNECTION_STRING': $CONNECTION_STRING"
   login-to-azure:
     executor: azure-cli/azure-docker
     steps:
       - run:
           command: touch test
       - run:
-          command:  az storage blob upload --name test  --container-name container_name --account-name updatetemplatestorage --file test --account-key ACCOUNT_KEY --connection-string CONNECTION_STRING
+          command:  az storage blob upload --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string CONNECTION_STRING_<< pipeline_parameters.env >>
           name: List resources of tenant stored as `AZURE_SP_TENANT` env var
 workflows:
   example-workflow:
     jobs:
-      - build
       - login-to-azure
 
 
