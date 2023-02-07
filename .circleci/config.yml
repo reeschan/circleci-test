@@ -12,7 +12,7 @@ commands:
       - run:
           command: touch test
       - run:
-          command:  az storage blob upload --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>　--overwrite
+          command:  az storage blob upload --overwrite true --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
   copy:
     executor: azure-cli/azure-docker
