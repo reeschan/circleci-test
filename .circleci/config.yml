@@ -3,25 +3,32 @@ orbs:
   azure-cli: circleci/azure-cli@1.2.2
 parameters:
   env:
-    type: 'string'
+    type: string
     default: "dev"
-jobs:
-  login-to-azure:
-    executor: azure-cli/azure-docker
+commands:
+  copy-to-azure:
     steps:
       - run:
           command: touch test
       - run:
           command:  az storage blob upload --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string CONNECTION_STRING_<< pipeline_parameters.env >>
           name: List resources of tenant stored as `AZURE_SP_TENANT` env var
+jobs:
+  copy:
+    executor: azure-cli/azure-docker
+    steps:
+      - run:
+          command: touch test
+      - copy-to-azure
 workflows:
+
   example-workflow:
     when:
-      and:
+      or:
         - equal: ['dev', << pipeline.parameters.env >>]
         - equal: ['it1', << pipeline.parameters.env >>]
         - equal: ['prod', << pipeline.parameters.env >>]
     jobs:
-      - login-to-azure
+      - copy
 
 
