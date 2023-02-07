@@ -13,11 +13,15 @@ commands:
       - run:
           working_directory: ./tmp/workspace/
           command: touch test
+      - run:
+          command: ls
   copy-to-azure:
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: ./tmp/workspace
+      - run:
+          command: ls
       - run:
           command:  az storage blob upload --overwrite true --name ./tmp/workspace/test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
