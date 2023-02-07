@@ -23,5 +23,5 @@ jobs:
 workflows:
   example-workflow:
     jobs:
-      - login-to-azure
+      - deploy-to-azure
 
