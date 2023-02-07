@@ -1,5 +1,6 @@
 version: 2.1
 orbs:
+  node: circleci/node@4.7
   azure-cli: circleci/azure-cli@1.2.2
 parameters:
   env:
@@ -15,7 +16,8 @@ commands:
           command:  az storage blob upload --overwrite true --name test  --container-name update-template-<< pipeline.parameters.env >> --account-name updatetemplatestorage --file test --account-key $ACCOUNT_KEY_<< pipeline.parameters.env >>--connection-string $CONNECTION_STRING_<< pipeline.parameters.env >>
 jobs:
   copy:
-    executor: azure-cli/azure-docker
+    docker:
+      - image: cimg/node:16.15.1
     steps:
       - run:
           command: touch test
